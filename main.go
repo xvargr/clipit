@@ -39,24 +39,7 @@ func main() {
 }
 
 func homepageHandler(w http.ResponseWriter, r *http.Request) {
-	handleGet := func() {
-		http.ServeFile(w, r, "./static/index.html")
-	}
-
-	handlePost := func() {
-		originalURL := r.FormValue("url")
-		shortenedURL := URLShortener.GetInstance().AddURL(r, originalURL)
-		fmt.Println("URL added successfully!", originalURL, shortenedURL)
-	}
-
-	switch r.Method {
-	case http.MethodGet:
-		handleGet()
-	case http.MethodPost:
-		handlePost()
-	default:
-		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
-	}
+	http.ServeFile(w, r, "./static/index.html")
 }
 
 func staticHandler(w http.ResponseWriter, r *http.Request) {
@@ -71,7 +54,7 @@ func shortenHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	originalURL := r.FormValue("url")
-	shortenedURL := URLShortener.GetInstance().AddURL(r, originalURL)
+	shortenedURL := URLShortener.Instance().AddMapping(r, originalURL)
 	json.NewEncoder(w).Encode(shortenedURL)
 }
 
@@ -82,7 +65,7 @@ func resolverHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	keyword := r.PathValue("keyword")
-	originalURL, ok := URLShortener.GetInstance().GetURL(keyword)
+	originalURL, ok := URLShortener.Instance().ResolveShortKeyToOriginal(keyword)
 	if !ok {
 		http.Error(w, "URL not found", http.StatusNotFound)
 		return
