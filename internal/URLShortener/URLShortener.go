@@ -65,9 +65,9 @@ func (u *URLShortener) AddURL(r *http.Request, originalURL string) string {
 	return fullyQualifiedShortURL
 }
 
-func (u *URLShortener) GetURL(clippedURL string) (ClippedURL, bool) {
+func (u *URLShortener) GetURL(clippedURL string) (string, bool) {
 	url, ok := u.urls[clippedURL]
-	return url, ok
+	return url.originalURL, ok
 }
 
 func generateShortURL() string {

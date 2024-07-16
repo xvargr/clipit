@@ -16,6 +16,6 @@ form.addEventListener("submit", (e) => {
       url.href = data;
     })
     .catch((err) => {
-      console.log(err);
+      console.error(err);
     });
 });
