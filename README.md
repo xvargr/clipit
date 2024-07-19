@@ -1,0 +1,1 @@
+Clipit is a web shortener web app, it maps long original URLs to shorter ones, it will resolve short URLs and redirect requests to the original URl. The app is written in Go using only its built in packages and has no external dependencies
