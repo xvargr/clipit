@@ -2,6 +2,7 @@ package URLShortener
 
 import (
 	"errors"
+	"log"
 	"math/rand/v2"
 	"net/http"
 	"strconv"
@@ -15,8 +16,8 @@ var instance *URLShortener
 var once sync.Once
 
 type Vocabulary struct {
-	Verb []string `json:"verb"`
-	Noun []string `json:"noun"`
+	Adjective []string `json:"adjective"`
+	Noun      []string `json:"noun"`
 }
 
 type URLShortener struct {
@@ -36,7 +37,7 @@ func Instance() *URLShortener {
 			shortToLong: make(map[string]UrlStore),
 			longToShort: make(map[string]UrlStore),
 		}
-		fileReader.Read("verbs.json", &instance.vocabulary)
+		fileReader.Read("adjectives.json", &instance.vocabulary)
 		fileReader.Read("nouns.json", &instance.vocabulary)
 	})
 
@@ -69,6 +70,8 @@ func (u *URLShortener) AddMapping(r *http.Request, originalURL string) string {
 
 	u.shortToLong[shortKey] = short
 	u.longToShort[originalURL] = long
+
+	log.Default().Printf("Added mapping: %s -> %s\n", shortKey, originalURL)
 
 	return long.content
 }
@@ -127,8 +130,8 @@ func (u *URLShortener) ResolveOriginalToShortKey(originalURL string) (string, bo
 
 func (u *URLShortener) generateShortKey() string {
 	nounList := u.vocabulary.Noun
-	verbList := u.vocabulary.Verb
-	return verbList[rand.IntN(len(verbList))] + "-" + nounList[rand.IntN(len(nounList))] + "-" + strconv.Itoa(rand.IntN(99))
+	adjectiveList := u.vocabulary.Adjective
+	return adjectiveList[rand.IntN(len(adjectiveList))] + "-" + nounList[rand.IntN(len(nounList))] + "-" + strconv.Itoa(rand.IntN(99))
 }
 
 func generateShortUrl(r *http.Request, k string) string {

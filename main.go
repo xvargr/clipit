@@ -16,7 +16,7 @@ func main() {
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("/{$}", HomepageHandler)
-	mux.HandleFunc("GET /static/{resourceName}", StaticHandler)
+	mux.HandleFunc("GET /static/{resourceName...}", StaticHandler)
 	mux.HandleFunc("POST /shorten", ShortenHandler)
 	mux.HandleFunc("GET /s/{keyword}", ResolverHandler)
 

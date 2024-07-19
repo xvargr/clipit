@@ -17,7 +17,7 @@ func GetConfig() *Config {
 	once.Do(func() {
 		instance = &Config{
 			Port:              "8081",
-			PruneIntervalHour: time.Minute * 1,
+			PruneIntervalHour: time.Hour * 1,
 		}
 	})
 

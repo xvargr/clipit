@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"github.com/xvargr/clippit/internal/URLShortener"
@@ -13,6 +14,7 @@ func HomepageHandler(w http.ResponseWriter, r *http.Request) {
 
 func StaticHandler(w http.ResponseWriter, r *http.Request) {
 	fileName := r.PathValue("resourceName")
+	fmt.Println(fileName)
 	http.ServeFile(w, r, "./static/"+fileName)
 }
 
@@ -23,6 +25,13 @@ func ShortenHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	originalURL := r.FormValue("url")
+	if originalURL == "" {
+		http.Error(w, "Incomplete form data, URL is required", http.StatusBadRequest)
+		return
+	}
+
+	// idea: reject self references
+
 	shortenedURL := URLShortener.Instance().AddMapping(r, originalURL)
 	json.NewEncoder(w).Encode(shortenedURL)
 }
