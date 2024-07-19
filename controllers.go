@@ -2,10 +2,11 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/xvargr/clippit/internal/URLShortener"
+	"github.com/xvargr/clippit/internal/config"
 )
 
 func HomepageHandler(w http.ResponseWriter, r *http.Request) {
@@ -14,7 +15,6 @@ func HomepageHandler(w http.ResponseWriter, r *http.Request) {
 
 func StaticHandler(w http.ResponseWriter, r *http.Request) {
 	fileName := r.PathValue("resourceName")
-	fmt.Println(fileName)
 	http.ServeFile(w, r, "./static/"+fileName)
 }
 
@@ -31,9 +31,13 @@ func ShortenHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// idea: reject self references
+	if strings.Contains(originalURL, r.Host) {
+		http.Error(w, "Self referencing URLs are not allowed", http.StatusBadRequest)
+		return
+	}
 
 	shortenedURL := URLShortener.Instance().AddMapping(r, originalURL)
-	json.NewEncoder(w).Encode(shortenedURL)
+	json.NewEncoder(w).Encode((map[string]string{"shortenedUrl": shortenedURL, "validity": config.GetConfig().PruneIntervalHour.String()}))
 }
 
 func ResolverHandler(w http.ResponseWriter, r *http.Request) {
@@ -45,7 +49,7 @@ func ResolverHandler(w http.ResponseWriter, r *http.Request) {
 	keyword := r.PathValue("keyword")
 	originalURL, ok := URLShortener.Instance().ResolveShortKeyToOriginal(keyword)
 	if !ok {
-		http.Error(w, "URL not found", http.StatusNotFound)
+		http.Error(w, "Not a valid short URL", http.StatusNotFound)
 		return
 	}
 
