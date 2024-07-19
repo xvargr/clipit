@@ -1,7 +1,6 @@
 package scheduler
 
 import (
-	"fmt"
 	"time"
 )
 
@@ -12,7 +11,6 @@ func Register(t time.Duration, task func()) {
 	go func() {
 		defer scheduler.Stop()
 		for {
-			fmt.Println("Scheduler waiting")
 			<-scheduler.C
 			task()
 		}
