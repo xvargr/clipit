@@ -11,10 +11,13 @@ form.addEventListener("submit", (e) => {
     method: "POST",
     body: formData,
   })
-    .then((res) => res.json())
+    .then(async (res) => {
+      if (res.status !== 200) throw res;
+      return await res.json();
+    })
     .then((data) => setToReady(data))
-    .catch((err) => {
-      console.error(err);
+    .catch(async (err) => {
+      window.alert(await err.text());
     });
 });
 
@@ -27,11 +30,25 @@ function setToStandby() {
   copyButton.disabled = true;
 }
 
-function setToReady(shortenedUrl) {
+function setToReady({ shortenedUrl, validity } = dat) {
   UrlDisplay.innerText = shortenedUrl;
   UrlDisplay.href = shortenedUrl;
   copyButton.disabled = false;
+  // console.log(parseValidityMessage(validity));
 }
+
+// validity is hardcoded for now
+// function parseValidityMessage(rawString) {
+//   // raw string is in the format of <number>h<number>m<number>s
+//   const [hours, minutes, seconds] = rawString.split(/[hms]/).map(Number);
+
+//   return (
+//     "This link will expire in " +
+//     (hours ? `${hours} hour${hours > 1 ? "s" : ""} ` : "") +
+//     (minutes ? `${minutes} minute${minutes > 1 ? "s" : ""} ` : "") +
+//     (seconds ? `${seconds} second${seconds > 1 ? "s" : ""}` : "")
+//   );
+// }
 
 function copyToClipboard() {
   navigator.clipboard?.writeText(UrlDisplay.innerText);

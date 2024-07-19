@@ -5,7 +5,6 @@ import (
 	"log"
 	"math/rand/v2"
 	"net/http"
-	"strconv"
 	"sync"
 	"time"
 
@@ -52,6 +51,8 @@ func (u *URLShortener) AddMapping(r *http.Request, originalURL string) string {
 	}
 
 	// regenerate short key if there are duplicates
+	// risk of infinite loop if all possible keys are taken
+	// but expecting low usage so this is acceptable
 	shortKey := u.generateShortKey()
 	_, ok := u.shortToLong[shortKey]
 	for ok {
@@ -103,11 +104,11 @@ func (u *URLShortener) Prune(interval time.Duration) int {
 func (u *URLShortener) renewMapping(shortKey string) error {
 	short, sOk := u.shortToLong[shortKey]
 	if !sOk {
-		return errors.New("short key not found in mapping")
+		return errors.New("short key could not be resolved")
 	}
 	long, lOk := u.longToShort[short.content]
 	if !lOk {
-		return errors.New("long key not found in mapping")
+		return errors.New("long key could not be resolved")
 	}
 
 	short.createdAt = time.Now()
@@ -131,7 +132,7 @@ func (u *URLShortener) ResolveOriginalToShortKey(originalURL string) (string, bo
 func (u *URLShortener) generateShortKey() string {
 	nounList := u.vocabulary.Noun
 	adjectiveList := u.vocabulary.Adjective
-	return adjectiveList[rand.IntN(len(adjectiveList))] + "-" + nounList[rand.IntN(len(nounList))] + "-" + strconv.Itoa(rand.IntN(99))
+	return adjectiveList[rand.IntN(len(adjectiveList))] + "-" + nounList[rand.IntN(len(nounList))]
 }
 
 func generateShortUrl(r *http.Request, k string) string {
