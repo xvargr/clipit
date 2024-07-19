@@ -30,7 +30,6 @@ func ShortenHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// idea: reject self references
 	if strings.Contains(originalURL, r.Host) {
 		http.Error(w, "Self referencing URLs are not allowed", http.StatusBadRequest)
 		return
