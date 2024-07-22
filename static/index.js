@@ -53,3 +53,17 @@ function setToReady({ shortenedUrl, validity } = dat) {
 function copyToClipboard() {
   navigator.clipboard?.writeText(UrlDisplay.innerText);
 }
+
+(function buttonClickBounce() {
+  const buttons = document.querySelectorAll("button");
+
+  buttons.forEach((button) => {
+    button.addEventListener("mousedown", () => {
+      button.classList.add("clicking");
+    });
+
+    button.addEventListener("mouseup", () => {
+      button.classList.remove("clicking");
+    });
+  });
+})();
