@@ -73,7 +73,7 @@ button {
   border: none;
   padding: 0.5rem 1rem;
   border-radius: 0.75rem;
-  transition: background-color 0.2s;
+  transition: background-color 0.2s, scale 0.1s;
 }
 button:hover {
   background-color: #927765;
@@ -82,6 +82,9 @@ button:disabled {
   background-color: inherit;
   opacity: 0.5;
   cursor: default;
+}
+button.clicking {
+  transform: scale(0.95);
 }
 
 small {
