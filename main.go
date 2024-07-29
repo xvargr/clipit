@@ -19,6 +19,7 @@ func main() {
 	mux.HandleFunc("GET /static/{resourceName...}", StaticHandler)
 	mux.HandleFunc("POST /shorten", ShortenHandler)
 	mux.HandleFunc("GET /s/{keyword}", ResolverHandler)
+	mux.HandleFunc("GET /health", HealthHandler)
 
 	scheduler.Register(purgeInterval, PruneTask)
 

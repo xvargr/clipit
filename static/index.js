@@ -57,15 +57,16 @@ function copyToClipboard() {
 (function buttonClickBounce() {
   const buttons = document.querySelectorAll("button");
 
+  function addBounce(element) {
+    element.classList.add("clicking");
+  }
+
   function removeBounce(element) {
     element.classList.remove("clicking");
   }
 
   buttons.forEach((button) => {
-    button.addEventListener("mousedown", () => {
-      button.classList.add("clicking");
-    });
-
+    button.addEventListener("mousedown", () => addBounce(button));
     button.addEventListener("mouseup", () => removeBounce(button));
     button.addEventListener("mouseleave", () => removeBounce(button));
   });
