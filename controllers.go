@@ -54,3 +54,9 @@ func ResolverHandler(w http.ResponseWriter, r *http.Request) {
 
 	http.Redirect(w, r, originalURL, http.StatusSeeOther)
 }
+
+func HealthHandler(w http.ResponseWriter, r *http.Request) {
+	(w).Header().Set("Access-Control-Allow-Origin", "https://xvargr.dev")
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte("OK"))
+}

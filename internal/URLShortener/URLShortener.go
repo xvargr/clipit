@@ -20,6 +20,7 @@ type Vocabulary struct {
 }
 
 type URLShortener struct {
+	// maps are stored in memory as databases are not the focus of this project
 	shortToLong map[string]UrlStore
 	longToShort map[string]UrlStore
 	vocabulary  Vocabulary
